@@ -161,7 +161,7 @@ if (existsSync(WEB_INDEX)) {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
-  console.log(`\n  delegate — http://localhost:${PORT}\n`);
+  console.log(`\n  ostium — http://localhost:${PORT}\n`);
   const s = await checkWalletCli();
   console.log(`  Wallet CLI: ${s.installed ? `v${s.version} (${s.commands.length} commands)` : 'not found'}\n`);
 });

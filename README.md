@@ -1,4 +1,4 @@
-# delegate
+# ostium
 
 **Hardware-signed mandates for AI agents — permission without keys.**
 
@@ -18,7 +18,7 @@ YOUR LEDGER WALLET (holds keys)
   |  Device cryptographically signs the mandate
   |
   v
-delegate MIDDLEWARE (enforces limits)
+ostium MIDDLEWARE (enforces limits)
   |
   |  Agent receives credential (mandate hash + ID — no key)
   |  Agent proposes actions autonomously
@@ -102,7 +102,7 @@ cd web && npm run build   # Build React for production
 ```
 $ npm run demo
 
-  delegate — Mandate Enforcement Tests
+  ostium — Mandate Enforcement Tests
 
   Mandate: 75da6b2154a55847
 
@@ -118,7 +118,7 @@ $ npm run demo
 
 ## Why This Matters
 
-| Current State | With delegate |
+| Current State | With ostium |
 |---|---|
 | Agent holds private key in memory | Agent holds mandate credential (key-less) |
 | No spending limits at protocol level | Per-tx, per-token, daily limits in hardware |

@@ -57,7 +57,7 @@ async function main(): Promise<void> {
   let pass = 0;
   let fail = 0;
 
-  console.log("\n  delegate — Mandate Enforcement Tests\n");
+  console.log("\n  ostium — Mandate Enforcement Tests\n");
   console.log(`  Mandate: ${mandate.id}\n`);
 
   for (const scenario of scenarios) {

@@ -527,7 +527,7 @@ async function renderDashboard(focusMandateId?: string): Promise<void> {
   const now = new Date();
 
   console.clear();
-  console.log(chalk.bold.inverse("  delegate — Hardware-Signed Agent Mandates  "));
+  console.log(chalk.bold.inverse("  ostium — Hardware-Signed Agent Mandates  "));
   console.log();
 
   const active = mandates.filter((m) => new Date(m.mandate.expiresAt) > now);
@@ -620,7 +620,7 @@ async function runDemo(): Promise<void> {
   print(D("  ─────────────"));
   print("  Every AI agent manages keys in software (.env files,");
   print("  plaintext configs). One compromise = total loss.");
-  print("  Delegates solves this: agents get mandates, not keys.");
+  print("  ostium solves this: agents get mandates, not keys.");
   print("");
 
   await delay(2500);

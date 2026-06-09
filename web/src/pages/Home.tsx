@@ -133,7 +133,7 @@ export default function Home() {
 
 function HowItWorks() {
   const steps = [
-    { num: '01', title: 'Connect your Ledger wallet', desc: 'Your Ledger device holds the private keys. It is the wallet. delegate adds a security layer on top — hardware-signed mandates that define what your AI agent is allowed to do.', icon: '\u270D' },
+    { num: '01', title: 'Connect your Ledger wallet', desc: 'Your Ledger device holds the private keys. ostium adds a security layer on top — hardware-signed mandates that define what your AI agent is allowed to do.', icon: '\u270D' },
     { num: '02', title: 'Agent receives credential', desc: 'Your AI agent gets a mandate credential — a hash + ID. No private key. No seed phrase. The agent cannot sign anything on its own.', icon: '\u2192' },
     { num: '03', title: 'Agent proposes transactions', desc: 'The agent works autonomously — analyzing markets, finding yield, executing strategies. Every proposed tx hits the mandate middleware first.', icon: '\u2699' },
     { num: '04', title: 'Middleware enforces limits', desc: 'Token in mandate? Amount within per-tx limit? Protocol allowed? Daily cap not exceeded? If any check fails, the tx is blocked and logged.', icon: '\u2714' },

@@ -1,5 +1,5 @@
 {
-  "name": "ledger-mandate",
+  "name": "ostium",
   "version": "1.0.0",
   "description": "Hardware-signed mandates for AI agents — permission without keys",
   "type": "module",

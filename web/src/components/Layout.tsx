@@ -48,7 +48,7 @@ export default function Layout() {
               letterSpacing: 1,
             }}
           >
-            delegate
+            ostium
           </NavLink>
 
           <div style={{ display: 'flex', gap: 32, alignItems: 'center' }}>
@@ -98,7 +98,7 @@ export default function Layout() {
           textTransform: 'uppercase',
         }}
       >
-        <span>delegate &mdash; built with Ledger Agent Stack</span>
+        <span>ostium — built with Ledger Agent Stack</span>
         <span>
           <a
             href="https://github.com/LedgerHQ/agent-skills"

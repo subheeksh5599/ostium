@@ -2,7 +2,7 @@
 set -euo pipefail
 
 echo ""
-echo "  delegate — Hardware-Signed Agent Mandates"
+echo "  ostium — Hardware-Signed Agent Mandates"
 echo "  =========================================="
 echo ""
 
