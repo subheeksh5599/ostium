@@ -77,6 +77,10 @@ web/src/
     └── ExecutionLog.tsx   — Audit log table with pass/fail rows
 ```
 
+## Live Demo
+
+**[ostium-pum.vercel.app](https://ostium-pum.vercel.app)**
+
 ## Quickstart
 
 ```bash
