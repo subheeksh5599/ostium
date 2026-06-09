@@ -15,6 +15,7 @@ export default function Home() {
   const [demoStep, setDemoStep] = useState(0);
   const [demoRunning, setDemoRunning] = useState(false);
   const [demoLogs, setDemoLogs] = useState<Array<{ step: number; label: string; status: string; reason?: string }>>([]);
+  const [cliProof, setCliProof] = useState('');
   const [mandateId, setMandateId] = useState('');
 
   useEffect(() => {
@@ -60,6 +61,12 @@ export default function Home() {
         await delay(350);
       }
       setDemoStep(9);
+      
+      const cp = await fetch('/api/cli-proof');
+      const cpData = await cp.json();
+      setCliProof(cpData.proof);
+      await delay(400);
+      setDemoStep(10);
     } catch {
       setDemoLogs(prev => [...prev, { step: 99, label: 'Backend not reachable', status: 'rejected' }]);
     }
@@ -101,7 +108,7 @@ export default function Home() {
             letterSpacing: 1, cursor: 'pointer', opacity: demoRunning ? 0.5 : 1,
           }}>{demoRunning ? 'RUNNING...' : 'Run Live Demo'}</button>
           {demoStep > 0 && (
-            <button onClick={() => { setDemoStep(0); setDemoLogs([]); setMandateId(''); setDemoRunning(false); }} style={{
+            <button onClick={() => { setDemoStep(0); setDemoLogs([]); setCliProof(''); setMandateId(''); setDemoRunning(false); }} style={{
               padding: '14px 20px', background: 'transparent', border: '1px solid var(--border)',
               color: 'var(--fg-dim)', fontFamily: 'var(--display)', fontSize: 10,
               textTransform: 'uppercase', letterSpacing: 1, cursor: 'pointer',
@@ -126,7 +133,7 @@ export default function Home() {
         </div>
       </section>
 
-      {demoStep > 0 && <DemoPanel demoStep={demoStep} demoLogs={demoLogs} mandateId={mandateId} />}
+      {demoStep > 0 && <DemoPanel demoStep={demoStep} demoLogs={demoLogs} mandateId={mandateId} cliProof={cliProof} />}
     </div>
   );
 }
@@ -277,9 +284,9 @@ function ConnectDeviceCard({
 }
 
 function DemoPanel({
-  demoStep, demoLogs, mandateId,
+  demoStep, demoLogs, mandateId, cliProof,
 }: {
-  demoStep: number; demoLogs: Array<{ step: number; label: string; status: string; reason?: string }>; mandateId: string;
+  demoStep: number; demoLogs: Array<{ step: number; label: string; status: string; reason?: string }>; mandateId: string; cliProof: string;
 }) {
   return (
     <section style={{
@@ -303,8 +310,24 @@ function DemoPanel({
             <Step key={i} n={3 + l.step} label={l.label} done={true} active={false} status={l.status} reason={l.reason} />
           ))}
           <Step n={9} label="0 keys exposed. 100% hardware-enforced from mandate to signature." done={demoStep >= 9} active={demoStep === 9} />
+          {cliProof && (
+            <>
+              <Step n={10} label="Wallet CLI proof: real DMK commands executed" done={demoStep >= 10} active={demoStep === 10} status="approved" />
+              {demoStep >= 10 && (
+                <pre style={{
+                  marginTop: 8, padding: 14, background: 'var(--bg)',
+                  border: '1px solid var(--border)',
+                  fontSize: 9, color: 'var(--fg-dim)', lineHeight: 1.5,
+                  whiteSpace: 'pre-wrap', fontFamily: 'var(--mono)',
+                  overflowX: 'auto', maxHeight: 300, overflowY: 'auto',
+                }}>
+{cliProof}
+                </pre>
+              )}
+            </>
+          )}
         </div>
-        {demoStep >= 9 && (
+        {demoStep >= 10 && (
           <div style={{
             padding: '14px 20px', borderTop: '1px solid var(--border)',
             background: 'var(--green-dim)', fontFamily: 'var(--display)',

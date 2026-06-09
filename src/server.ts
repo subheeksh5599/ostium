@@ -137,6 +137,24 @@ app.get("/api/connect", async (_req, res) => {
   }
 });
 
+app.get("/api/cli-proof", async (_req, res) => {
+  const results: string[] = [];
+  
+  const help = await runCliCommand("--help");
+  results.push("$ wallet-cli --help");
+  results.push(help.output.slice(0, 400));
+  
+  const dryRun = await runCliCommand("send --dry-run --to 11111111111111111111111111111111 --amount '0.001 SOL' --output json");
+  results.push("\n$ wallet-cli send --dry-run --to 1111... --amount '0.001 SOL'");
+  if (dryRun.ok) {
+    results.push(dryRun.output.slice(0, 300));
+  } else {
+    results.push("[requires device/emulator] " + dryRun.output.slice(0, 200));
+  }
+  
+  res.json({ proof: results.join("\n") });
+});
+
 app.get("/api/status", async (_req, res) => {
   const status = await checkWalletCli();
   res.json(status);

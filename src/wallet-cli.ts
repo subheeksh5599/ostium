@@ -59,7 +59,9 @@ export async function runCliCommand(
   args: string
 ): Promise<{ ok: boolean; output: string }> {
   try {
-    const fullArgs = args.includes("--output") ? args : `${args} --output json`;
+    const fullArgs = (args.includes("--help") || args.includes("--output"))
+      ? args
+      : `${args} --output json`;
     const result = await execAsync(`${CLI} ${fullArgs} 2>&1`, {
       timeout: 10000,
       maxBuffer: 1024 * 1024,
