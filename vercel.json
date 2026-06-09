@@ -1,11 +1,5 @@
 {
-  "framework": null,
   "buildCommand": "cd web && npm install && npm run build",
   "outputDirectory": "web/dist",
-  "installCommand": "npm install",
-  "functions": {
-    "api/[...route].ts": {
-      "includeFiles": "src/**"
-    }
-  }
+  "installCommand": "npm install"
 }

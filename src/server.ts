@@ -12,6 +12,18 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 app.use(express.json());
 
+app.use((_req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  if (_req.method === "OPTIONS") return res.status(200).end();
+  next();
+});
+
+app.get("/api/health", (_req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
 const WEB_DIST = join(__dirname, "..", "web", "dist");
 const WEB_INDEX = join(WEB_DIST, "index.html");
 

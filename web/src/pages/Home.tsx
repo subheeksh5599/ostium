@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { api } from '../api';
 
 interface CliStatus {
   installed: boolean;
@@ -19,8 +20,7 @@ export default function Home() {
   const [mandateId, setMandateId] = useState('');
 
   useEffect(() => {
-    fetch('/api/status')
-      .then((r) => r.json())
+    api('/api/status')
       .then(s => { setStatus(s); setDeviceFound(s.installed); })
       .catch(() => {});
   }, []);
@@ -29,8 +29,7 @@ export default function Home() {
     setConnecting(true);
     setDeviceMsg('Scanning for Ledger device...');
     try {
-      const res = await fetch('/api/connect');
-      const data = await res.json();
+      const data = await api('/api/connect');
       setDeviceFound(data.connected);
       setDeviceMsg(data.connected
         ? 'Connected to Ledger device / Speculos emulator on port ' + (data.port || 40000)
@@ -51,8 +50,7 @@ export default function Home() {
     setDemoStep(2);
     await delay(500);
     try {
-      const res = await fetch('/api/demo', { method: 'POST' });
-      const data = await res.json();
+      const data = await api('/api/demo', { method: 'POST' });
       setMandateId(data.mandateId);
       for (let i = 0; i < data.results.length; i++) {
         const r = data.results[i];
@@ -62,8 +60,7 @@ export default function Home() {
       }
       setDemoStep(9);
       
-      const cp = await fetch('/api/cli-proof');
-      const cpData = await cp.json();
+      const cpData = await api('/api/cli-proof');
       setCliProof(cpData.proof);
       await delay(400);
       setDemoStep(10);

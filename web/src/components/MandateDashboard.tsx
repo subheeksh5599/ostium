@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { api } from '../api';
 
 interface TokenLimit {
   ticker: string;
@@ -38,8 +39,7 @@ export default function MandateDashboard() {
 
   const fetchMandates = async () => {
     try {
-      const res = await fetch('/api/mandates');
-      const data = await res.json();
+      const data = await api('/api/mandates');
       setMandates(data);
     } catch {}
     setLoading(false);

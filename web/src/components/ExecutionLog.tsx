@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { SectionHeader, EmptyState } from './MandateDashboard';
+import { api } from '../api';
 
 interface LogEntry {
   timestamp: string;
@@ -17,8 +18,7 @@ export default function ExecutionLog() {
 
   const fetchLogs = async () => {
     try {
-      const res = await fetch('/api/audit');
-      const data = await res.json();
+      const data = await api('/api/audit');
       setLogs(data);
     } catch {}
     setLoading(false);

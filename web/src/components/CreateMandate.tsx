@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { SectionHeader } from './MandateDashboard';
+import { api } from '../api';
 
 export default function CreateMandate({ onCreated }: { onCreated: () => void }) {
   const [agentId, setAgentId] = useState('YieldScout');
@@ -15,9 +16,8 @@ export default function CreateMandate({ onCreated }: { onCreated: () => void }) 
     setCreating(true);
     setResult(null);
     try {
-      const res = await fetch('/api/mandates/create', {
+      const data = await api('/api/mandates/create', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           agentId,
           tokens,
@@ -27,7 +27,6 @@ export default function CreateMandate({ onCreated }: { onCreated: () => void }) 
           durationHours: duration,
         }),
       });
-      const data = await res.json();
       setResult({
         ok: true,
         msg: `Mandate ${data.mandate.id.slice(0, 8)} created & signed by ${data.signedBy}`,
