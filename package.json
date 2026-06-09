@@ -1,0 +1,39 @@
+{
+  "name": "ledger-mandate",
+  "version": "1.0.0",
+  "description": "Hardware-signed mandates for AI agents — permission without keys",
+  "type": "module",
+  "bin": {
+    "mandate": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/cli.ts",
+    "demo": "tsx examples/demo.ts",
+    "server": "tsx src/server.ts",
+    "dev:full": "tsx src/server.ts",
+    "setup": "bash scripts/setup.sh",
+    "speculos": "bash scripts/start-speculos.sh"
+  },
+  "dependencies": {
+    "@ledgerhq/device-management-kit": "^1.6.0",
+    "@ledgerhq/device-signer-kit-solana": "^1.9.1",
+    "@ledgerhq/device-transport-kit-speculos": "^1.2.1",
+    "@ledgerhq/speculos-device-controller": "^0.3.0",
+    "@solana/web3.js": "^1.95.0",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "crypto-js": "^4.2.0",
+    "express": "^4.22.2"
+  },
+  "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

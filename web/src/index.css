@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg: #080807;
+  --surface: #0f0f0e;
+  --surface2: #151514;
+  --border: #1e1e1c;
+  --border-active: #333330;
+  --fg: #e8e6e3;
+  --fg-dim: #6b6b66;
+  --fg-mid: #9c9c95;
+  --accent: #ff5e13;
+  --accent-dim: rgba(255, 94, 19, 0.12);
+  --green: #22cc66;
+  --green-dim: rgba(34, 204, 102, 0.12);
+  --red: #ff4444;
+  --red-dim: rgba(255, 68, 68, 0.12);
+  --yellow: #ddaa00;
+  --yellow-dim: rgba(221, 170, 0, 0.12);
+  --display: 'Space Mono', monospace;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg-dim);
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-active);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+input, button, textarea, select {
+  font-family: var(--mono);
+}
+
+input {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  padding: 8px 12px;
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+input:focus {
+  border-color: var(--accent);
+}
+input::placeholder {
+  color: var(--border-active);
+}
+
+button {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  padding: 10px 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+button:active {
+  background: var(--accent-dim);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+th {
+  text-align: left;
+  color: var(--fg-dim);
+  font-weight: 400;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+td {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(30, 30, 28, 0.5);
+  color: var(--fg-mid);
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+  opacity: 0;
+}
