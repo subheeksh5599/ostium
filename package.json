@@ -10,7 +10,7 @@
     "build": "tsc",
     "dev": "tsx src/cli.ts",
     "demo": "tsx examples/demo.ts",
-    "server": "tsx src/server.ts",
+    "server": "node dist/server.js",
     "dev:full": "tsx src/server.ts",
     "setup": "bash scripts/setup.sh",
     "speculos": "bash scripts/start-speculos.sh"
