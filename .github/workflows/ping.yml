@@ -1,0 +1,13 @@
+name: Keep Render alive
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render backend
+        run: |
+          curl -sf https://ostium-backend.onrender.com/api/health || echo "Render waking up..."
