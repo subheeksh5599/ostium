@@ -91,7 +91,7 @@ npm run server
 cd web && npm run dev
 ```
 
-Open **http://localhost:3000** (production) or **http://localhost:5173** (dev with hot reload).
+Open **https://ledger-mandate.vercel.app** (live deployment) or **http://localhost:3000** (local).
 
 ### Real testnet token trading setup
 
