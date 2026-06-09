@@ -6,35 +6,51 @@ AI agents should not hold private keys. They should hold hardware-signed, time-b
 
 Built with the [Ledger Agent Stack](https://github.com/LedgerHQ/agent-skills): DMK + Wallet CLI + Speculos.
 
-![Ledger Device Screen](LEDGER.png)
+![How ostium works](LEDGER.png)
 
-## How It Works
+---
+
+## How ostium enables AI trading on Solana testnet
 
 ```
-YOUR LEDGER WALLET (holds keys)
-  |
-  |  Create mandate: define tokens, limits, protocols, duration
-  |  Mandate appears on Ledger screen → you press APPROVE
-  |  Device cryptographically signs the mandate
-  |
-  v
-ostium MIDDLEWARE (enforces limits)
-  |
-  |  Agent receives credential (mandate hash + ID — no key)
-  |  Agent proposes actions autonomously
-  |  Every tx checked against mandate:
-  |    token allowed? amount within limit? protocol allowed? daily cap OK?
-  |
-  |  APPROVED → forwarded to Ledger for device signing
-  |  BLOCKED  → logged to audit trail with reason
-  |
-  v
-LEDGER DEVICE (signs approved txs)
-  |
-  |  Human reviews tx on hardware screen
-  |  Confirms with physical buttons
-  |  Device signs → broadcast
+YOU (with Ledger device holding testnet SOL)
+  │
+  ├─ Create mandate: devUSDC (0.5/tx, 5/day), devSOL (0.1/tx, 1/day)
+  │  ├─ Mandate appears on Ledger screen
+  │  ├─ You press APPROVE
+  │  └─ Ledger cryptographically signs the mandate
+  │
+  ▼
+AI TRADING AGENT (e.g. YieldScout)
+  │
+  ├─ Runs autonomous trading strategy on Solana devnet
+  ├─ Finds arbitrage: buy devSOL on Orca, sell on Jupiter
+  ├─ Proposes tx: swap 6 devUSDC for devSOL via Jupiter
+  │
+  ▼
+OSTIUM MIDDLEWARE (mandate enforcement)
+  │
+  ├─ Token check:  devUSDC ✓ (in mandate)
+  ├─ Amount check: 6 > 0.5  ✗ BLOCKED — exceeds per-tx limit
+  │  └─ Logged to audit trail. Agent never reaches the device.
+  │
+  ├─ Agent re-tries with 0.3 devUSDC
+  ├─ Token check ✓ · Amount check ✓ · Protocol check ✓
+  │  └─ ✓ APPROVED — forwarded to Ledger device
+  │
+  ▼
+LEDGER DEVICE (final signing)
+  │
+  ├─ Tx appears on hardware screen
+  ├─ You review: "Swap 0.3 devUSDC → SOL on Jupiter"
+  └─ You press buttons to sign → tx broadcasts to devnet
 ```
+
+**Without ostium:** agent holds your key. No limits. Gone rogue = drained.
+
+**With ostium:** agent holds a mandate hash. Every tx gated by hardware-enforced limits. You physically sign only approved transactions.
+
+---
 
 ## Architecture
 
@@ -44,29 +60,29 @@ src/
 ├── middleware.ts   — Enforcement engine, spend tracking, audit log
 ├── agent.ts        — Agent SDK, credential creation, action proposal
 ├── wallet-cli.ts   — Wallet CLI integration, device connection, signing flow
-├── server.ts       — Express API server
-└── cli.ts          — CLI commands
+├── server.ts       — Express API server + 8 endpoints
+└── cli.ts          — CLI commands + live demo
 
 web/src/
 ├── pages/
-│   ├── Home.tsx         — Hero, How It Works, Connect Ledger, Live Demo
+│   ├── Home.tsx         — Hero, How It Works, Connect Ledger, Live Demo w/ CLI proof
 │   ├── Dashboard.tsx    — Active mandates + create form
-│   ├── Test.tsx         — Proposal tester with mandate selector
+│   ├── Test.tsx         — Proposal tester with mandate selector dropdown
 │   └── Audit.tsx        — Full execution log table
 └── components/
-    ├── Layout.tsx       — Nav bar + footer
-    ├── Hero.tsx         — Typewriter hero
-    ├── MandateDashboard.tsx
-    ├── CreateMandate.tsx
-    ├── ProposalTester.tsx
-    └── ExecutionLog.tsx
+    ├── Layout.tsx         — Navigation bar + footer
+    ├── CreateMandate.tsx  — Mandate creation form
+    ├── ProposalTester.tsx — Transaction proposal with device screen mockup
+    ├── MandateDashboard.tsx — Live mandate cards with progress bars
+    └── ExecutionLog.tsx   — Audit log table with pass/fail rows
 ```
 
 ## Quickstart
 
 ```bash
-# Install
-cd ledger-mandate && npm install && cd web && npm install && cd ..
+# Clone and install
+git clone git@github.com:subheeksh5599/ostium.git
+cd ostium && npm install && cd web && npm install && cd ..
 
 # Start backend API
 npm run server
@@ -77,25 +93,51 @@ cd web && npm run dev
 
 Open **http://localhost:3000** (production) or **http://localhost:5173** (dev with hot reload).
 
-## Commands
+### Real testnet token trading setup
 
 ```bash
-npm run demo              # CLI test harness — 6 enforcement scenarios
-npm run server            # Start API server
-cd web && npm run build   # Build React for production
+# 1. Install Speculos emulator
+pip install speculos
+
+# 2. Download Solana app for the emulator
+curl -L https://github.com/LedgerHQ/app-solana/releases/download/v1.5.0/app.elf -o /tmp/solana.elf
+
+# 3. Start the emulator
+speculos --model nanosp --display headless --api-port 5000 /tmp/solana.elf
+
+# 4. In another terminal, connect Wallet CLI to the emulator
+export SPECULOS_API=http://localhost:5000
+wallet-cli account discover solana:devnet
+
+# 5. Fund the devnet account
+solana airdrop 2 <YOUR_ADDRESS> --url devnet
+
+# 6. Now use ostium to create mandates and let your AI agent trade
+```
+
+### Create a mandate via CLI
+
+```bash
+npm run dev -- create \
+  --agent-id YieldScout \
+  --tokens "devUSDC:0.5:5,devSOL:0.1:1" \
+  --protocols "jupiter,orca" \
+  --duration 24 --sign
 ```
 
 ## API
 
 | Method | Path | Description |
 |---|---|---|
-| `GET` | `/api/status` | Wallet CLI version + commands |
-| `GET` | `/api/connect` | Scan for Ledger device / Speculos |
+| `GET` | `/api/status` | Wallet CLI version + available commands |
+| `GET` | `/api/connect` | Scan for Ledger device / Speculos emulator |
+| `GET` | `/api/cli-proof` | Real Wallet CLI output (help + dry-run) |
+| `GET` | `/api/cli-demo` | Full signing flow walkthrough |
 | `POST` | `/api/demo` | Run 6-scenario mandate enforcement demo |
 | `GET` | `/api/mandates` | List all mandates |
 | `POST` | `/api/mandates/create` | Create & sign a mandate |
-| `POST` | `/api/propose` | Test a tx against a mandate |
-| `GET` | `/api/audit` | Get execution audit log |
+| `POST` | `/api/propose` | Test a transaction against a mandate |
+| `GET` | `/api/audit` | Execution audit log |
 
 ## Demo
 
@@ -116,12 +158,22 @@ $ npm run demo
   6 passed, 0 failed
 ```
 
+## Enforcement checks (per transaction)
+
+| Check | Description |
+|---|---|
+| Token allowed? | Is the token ticker in the mandate's allowlist? |
+| Per-tx limit? | Does the amount stay within the per-transaction cap? |
+| Protocol allowed? | Is the target protocol in the mandate? |
+| Daily cap? | Has the cumulative daily limit been exceeded? |
+| Mandate expired? | Is the mandate still within its time window? |
+
 ## Why This Matters
 
-| Current State | With ostium |
+| Current state | With ostium |
 |---|---|
 | Agent holds private key in memory | Agent holds mandate credential (key-less) |
-| No spending limits at protocol level | Per-tx, per-token, daily limits in hardware |
+| No spending limits at protocol level | Per-tx, per-token, daily limits enforced by hardware |
 | Any protocol, any token | Mandate allowlist enforced before signing |
 | Permanent access | Time-bound, human-revokable |
 | Compromise = everything lost | Compromise = blocked at mandate level |
@@ -129,10 +181,8 @@ $ npm run demo
 ## Built with the Ledger Agent Stack
 
 - **DMK Skills** — SDK for agent-device communication
-- **Wallet CLI** — Transaction assembly and signing
-- **Speculos** — Open-source Ledger device emulator
-
-No physical Ledger required — Speculos emulator is fully supported.
+- **Wallet CLI** — Transaction assembly, dry-run, and hardware signing
+- **Speculos** — Open-source Ledger device emulator (no physical device required)
 
 ## License
 
