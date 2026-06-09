@@ -184,19 +184,6 @@ $ npm run demo
 - **Wallet CLI** — Transaction assembly, dry-run, and hardware signing
 - **Speculos** — Open-source Ledger device emulator (no physical device required)
 
-## Deployment
-
-- **Frontend:** https://web-six-plum-52.vercel.app (Vercel)
-- **Backend:** https://ostium-backend.onrender.com (Render)
-
-### Keep Render awake (free tier)
-
-Render sleeps after 15 min of inactivity. This repo includes a GitHub Action (`.github/workflows/ping.yml`) that pings every 10 min. For extra reliability:
-
-1. Go to https://uptimerobot.com (free)
-2. Add monitor → URL: `https://ostium-backend.onrender.com/api/health`
-3. Interval: 5 minutes
-
 ## License
 
 MIT
