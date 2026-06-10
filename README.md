@@ -159,8 +159,15 @@ $ npm run demo
   PASS  Allowed: 0.05 devSOL via Orca
   PASS  Allowed: simple transfer, no protocol check
 
-  6 passed, 0 failed
+   6 passed, 0 failed
 ```
+
+The Live Demo creates a real mandate and runs real enforcement through
+`validateMandate()` — every check (token allowlist, per-tx limit, daily cap,
+protocol, expiration) uses the same logic as manual mandate creation and proposal
+testing. The only simulated part is the device signing signature string — no
+physical Ledger or Speculos is called by the demo. For real hardware signing,
+connect a Ledger device or run the Speculos emulator.
 
 ## Enforcement checks (per transaction)
 
