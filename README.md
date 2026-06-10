@@ -95,7 +95,9 @@ npm run server
 cd web && npm run dev
 ```
 
-Open **https://ledger-mandate.vercel.app** (live deployment) or **http://localhost:3000** (local).
+Open **https://ostium-pum.vercel.app** (live deployment) or **http://localhost:5173** (local dev).
+
+> The Connect Ledger section shows Wallet CLI v1.0.2 with a green dot **only on localhost** — where the backend can access the Wallet CLI binary installed on your machine. On the deployed site, the cloud backend has no USB ports and no Wallet CLI binary, so device connection is not available. Hardware signing requires running locally with a physical Ledger or the Speculos emulator.
 
 ### Real testnet token trading setup
 

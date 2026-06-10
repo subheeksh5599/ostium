@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { SectionHeader, EmptyState } from './MandateDashboard';
-const API = 'https://ostium-backend.onrender.com';
+import { api } from '../api';
 
 interface LogEntry {
   timestamp: string;
@@ -18,7 +18,7 @@ export default function ExecutionLog() {
 
   const fetchLogs = async () => {
     try {
-      const data = await fetch(`${API}/api/audit`).then(r => r.json());
+      const data = await api('/api/audit');
       setLogs(data);
     } catch {}
     setLoading(false);
