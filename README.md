@@ -4,6 +4,8 @@
 
 AI agents should not hold private keys. They should hold hardware-signed, time-bound, limit-enforced mandates that define exactly what they're allowed to do — and nothing more.
 
+**[Watch the demo](https://youtu.be/Us20OUnsnW8)** · [Live site](https://ostium-pum.vercel.app)
+
 Built with the [Ledger Agent Stack](https://github.com/LedgerHQ/agent-skills): DMK + Wallet CLI + Speculos.
 
 ![How ostium works](LEDGER.png)
