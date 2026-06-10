@@ -2,7 +2,16 @@ import { execSync, exec } from "node:child_process";
 import { promisify } from "node:util";
 
 const execAsync = promisify(exec);
-const CLI = "/home/arch/.npm-global/bin/wallet-cli";
+
+function findCli(): string | null {
+  try {
+    return execSync("which wallet-cli 2>/dev/null", { encoding: "utf-8", timeout: 5000 }).trim() || null;
+  } catch {
+    return null;
+  }
+}
+
+const CLI = findCli() || "wallet-cli";
 
 export interface CliStatus {
   installed: boolean;
@@ -43,15 +52,17 @@ export async function checkWalletCli(): Promise<CliStatus> {
     cachedStatus = result;
     return result;
   } catch (err: any) {
-    return {
+    const fallback = {
       installed: false,
       version: "",
       commands: [],
       sessionActive: false,
       speculosAvailable: false,
       deviceConnected: false,
-      output: err.message || "Wallet CLI not found",
+      output: err.message?.slice(0, 200) || "Wallet CLI not found",
     };
+    cachedStatus = fallback;
+    return fallback;
   }
 }
 
@@ -77,36 +88,39 @@ export async function demoSigningFlow(): Promise<string> {
 
   const check = await checkWalletCli();
   if (!check.installed) {
-    steps.push("ERROR: Ledger Wallet CLI not installed. Run: npm i -g @ledgerhq/wallet-cli");
+    steps.push("Wallet CLI not found on this server.");
+    steps.push("Device signing requires running locally with:");
+    steps.push("  cd ostium && npm run server");
+    steps.push("");
+    steps.push("Then: pip install speculos && speculos --model nanosp --api-port 5000 apps/solana.elf");
     return steps.join("\n");
   }
 
   steps.push(`Wallet CLI v${check.version} installed`);
   steps.push(`Available commands: ${check.commands.slice(0, 6).join(", ")}...`);
-
   steps.push("");
 
   const dryRun = await runCliCommand("send --dry-run --to 11111111111111111111111111111111 --amount '0.001 SOL' --output json");
   if (dryRun.ok) {
-    steps.push("[DRY-RUN] Transaction assembly succeeded (no device needed):");
+    steps.push("[DRY-RUN] Transaction assembly OK:");
     steps.push(dryRun.output.slice(0, 300));
   } else {
-    steps.push("[DRY-RUN] Status: " + dryRun.output.slice(0, 200));
+    steps.push("[DRY-RUN] Requires device/emulator: " + dryRun.output.slice(0, 200));
   }
 
   steps.push("");
-  steps.push("DHARDWARE SIGNING FLOW (with Speculos or Ledger device):");
-  steps.push("  1. Agent proposes tx → mandate middleware checks limits");
-  steps.push("  2. If approved → Wallet CLI assembles transaction");
-  steps.push("  3. Transaction displayed on device screen");
+  steps.push("HARDWARE SIGNING FLOW:");
+  steps.push("  1. Agent proposes tx -> mandate checks limits");
+  steps.push("  2. Approved -> Wallet CLI assembles tx");
+  steps.push("  3. Tx appears on Ledger device screen");
   steps.push("  4. Human reviews & confirms on device");
-  steps.push("  5. Device signs → CLI broadcasts");
+  steps.push("  5. Device signs -> CLI broadcasts");
   steps.push("");
-  steps.push("To demo with Speculos emulator:");
+  steps.push("Speculos emulator:");
   steps.push("  pip install speculos");
   steps.push("  speculos --model nanosp --display headless --api-port 5000 apps/solana.elf");
   steps.push("");
-  steps.push("Then connect: wallet-cli session view");
+  steps.push("Then: wallet-cli account discover solana:devnet");
 
   return steps.join("\n");
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { api } from '../api';
+const API = 'https://ostium-backend.onrender.com';
 
 interface CliStatus {
   installed: boolean;
@@ -20,7 +20,7 @@ export default function Home() {
   const [mandateId, setMandateId] = useState('');
 
   useEffect(() => {
-    api('/api/status')
+    fetch(`${API}/api/status`).then(r => r.json())
       .then(s => { setStatus(s); setDeviceFound(s.installed); })
       .catch(() => {});
   }, []);
@@ -29,7 +29,7 @@ export default function Home() {
     setConnecting(true);
     setDeviceMsg('Scanning for Ledger device...');
     try {
-      const data = await api('/api/connect');
+      const data = await fetch(`${API}/api/connect`).then(r => r.json());
       setDeviceFound(data.connected);
       setDeviceMsg(data.connected
         ? 'Connected to Ledger device / Speculos emulator on port ' + (data.port || 40000)
@@ -50,7 +50,7 @@ export default function Home() {
     setDemoStep(2);
     await delay(500);
     try {
-      const data = await api('/api/demo', { method: 'POST' });
+      const data = await fetch(`${API}/api/demo`, { method: 'POST', headers: {'Content-Type': 'application/json'} }).then(r => r.json());
       setMandateId(data.mandateId);
       for (let i = 0; i < data.results.length; i++) {
         const r = data.results[i];
@@ -60,7 +60,7 @@ export default function Home() {
       }
       setDemoStep(9);
       
-      const cpData = await api('/api/cli-proof');
+      const cpData = await fetch(`${API}/api/cli-proof`).then(r => r.json());
       setCliProof(cpData.proof);
       await delay(400);
       setDemoStep(10);

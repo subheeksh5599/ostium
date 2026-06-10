@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { SectionHeader } from './MandateDashboard';
-import { api } from '../api';
+const API = 'https://ostium-backend.onrender.com';
 
 interface Mandate {
   mandate: {
@@ -28,7 +28,7 @@ export default function ProposalTester({ onProposed }: { onProposed: () => void 
   } | null>(null);
 
   useEffect(() => {
-    api('/api/mandates')
+    fetch(`${API}/api/mandates`).then(r => r.json())
       .then((data) => {
         setMandates(data);
         if (data.length > 0 && !mandateId) {
@@ -45,8 +45,9 @@ export default function ProposalTester({ onProposed }: { onProposed: () => void 
     setTesting(true);
     setResult(null);
     try {
-      const data = await api('/api/propose', {
+      const res = await fetch(`${API}/api/propose`, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           mandateId,
           ticker,
@@ -54,6 +55,7 @@ export default function ProposalTester({ onProposed }: { onProposed: () => void 
           protocol: protocol || undefined,
         }),
       });
+      const data = await res.json();
       setResult(data);
       onProposed();
     } catch (err: any) {

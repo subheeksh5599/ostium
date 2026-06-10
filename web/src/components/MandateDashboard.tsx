@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { api } from '../api';
+
+const API = 'https://ostium-backend.onrender.com';
 
 interface TokenLimit {
   ticker: string;
@@ -39,7 +40,8 @@ export default function MandateDashboard() {
 
   const fetchMandates = async () => {
     try {
-      const data = await api('/api/mandates');
+      const res = await fetch(`${API}/api/mandates`);
+      const data = await res.json();
       setMandates(data);
     } catch {}
     setLoading(false);
